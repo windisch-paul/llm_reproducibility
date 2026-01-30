@@ -1,0 +1,17 @@
+# Environment
+.env
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Original ignored files (adapted to new structure)
+data/trials.csv
+CLAUDE.md
+
+# Logs directory
+logs/
