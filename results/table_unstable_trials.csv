@@ -1,0 +1,11 @@
+Trial ID,Unstable settings,Invalid settings,Invalid outputs,Pure flip settings,Vendors with instability,Title,Journal,Ground truth
+31,12,1,1,11,"gemini, openai",Computed tomographic colonography versus colonoscopy for investigation of patients with symptoms suggestive of colorectal cancer (SIGGAR): a multicentre randomised trial.,Lancet,POSITIVE
+127,12,3,4,9,"gemini, openai",Randomized comparison of ABVD chemotherapy with a strategy that includes radiation therapy in patients with limited-stage Hodgkin's lymphoma: National Cancer Institute of Canada Clinical Trials Group and the Eastern Cooperative Oncology Group.,J Clin Oncol,NEGATIVE
+122,6,1,1,5,gemini,Lenalidomide plus high-dose dexamethasone versus lenalidomide plus low-dose dexamethasone as initial therapy for newly diagnosed multiple myeloma: an open-label randomised controlled trial.,Lancet Oncol,POSITIVE
+46,5,6,9,0,gemini,High-dose therapy and autologous blood stem-cell transplantation compared with conventional treatment in myeloma patients aged 55 to 65 years: long-term results of a randomized control trial from the Group Myelome-Autogreffe.,J Clin Oncol,NEGATIVE
+97,5,5,6,0,gemini,Effect of Oral β-Glucan on Antibody Response to Ganglioside Vaccine in Patients With High-Risk Neuroblastoma: A Phase 2 Randomized Clinical Trial.,JAMA Oncol,POSITIVE
+61,4,5,10,0,gemini,"Tivozanib versus sorafenib in patients with advanced renal cell carcinoma (TIVO-3): a phase 3, multicentre, randomised, controlled, open-label study.",Lancet Oncol,POSITIVE
+245,4,4,5,0,gemini,Randomized Trial of Systemic Therapy After Involved-Field Radiotherapy in Patients With Early-Stage Follicular Lymphoma: TROG 99.03.,J Clin Oncol,POSITIVE
+126,3,4,8,0,gemini,"Adenovirus-mediated gene therapy with sitimagene ceradenovec followed by intravenous ganciclovir for patients with operable high-grade glioma (ASPECT): a randomised, open-label, phase 3 trial.",Lancet Oncol,POSITIVE
+63,3,4,6,0,gemini,"Randomized phase II, double-blind, placebo-controlled study of exemestane with or without entinostat in postmenopausal women with locally recurrent or metastatic estrogen receptor-positive breast cancer progressing on treatment with a nonsteroidal aromatase inhibitor.",J Clin Oncol,POSITIVE
+232,3,3,5,0,gemini,Adjuvant Sunitinib in High-Risk Renal-Cell Carcinoma after Nephrectomy.,N Engl J Med,POSITIVE

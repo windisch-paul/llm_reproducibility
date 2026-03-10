@@ -279,6 +279,73 @@ def analyze_predictions(predictions_path: Path, output_dir: Path):
     print(lowest_valid.to_string(index=False))
 
 
+def generate_unstable_trials_table(predictions_path: Path, trials_path: Path, output_dir: Path, top_n: int = 10):
+    """Generate a supplement table for the most unstable trials."""
+    predictions_df = pd.read_csv(predictions_path)
+    trials_df = pd.read_csv(trials_path).rename(columns={"Unnamed: 0": "trial_idx"})
+
+    rows = []
+    for trial_idx, trial_df in predictions_df.groupby("trial_idx"):
+        unstable_settings = 0
+        invalid_settings = 0
+        pure_flip_settings = 0
+        vendors_with_instability = set()
+
+        for setting_keys, setting_df in trial_df.groupby(["vendor", "model", "temperature", "reasoning_level"]):
+            outputs = tuple(setting_df.sort_values("replicate")["parsed_output"])
+            unique_outputs = set(outputs)
+
+            if len(unique_outputs) > 1:
+                unstable_settings += 1
+                vendors_with_instability.add(setting_keys[0])
+
+            if any(output in ("INVALID", "ERROR") for output in unique_outputs):
+                invalid_settings += 1
+
+            if unique_outputs <= {"POSITIVE", "NEGATIVE"} and len(unique_outputs) > 1:
+                pure_flip_settings += 1
+
+        invalid_outputs = int(trial_df["parsed_output"].isin(["INVALID", "ERROR"]).sum())
+
+        rows.append({
+            "trial_idx": int(trial_idx),
+            "unstable_settings": unstable_settings,
+            "invalid_settings": invalid_settings,
+            "invalid_outputs": invalid_outputs,
+            "pure_flip_settings": pure_flip_settings,
+            "vendors_with_instability": ", ".join(sorted(vendors_with_instability)),
+        })
+
+    unstable_df = pd.DataFrame(rows)
+    unstable_df = unstable_df[unstable_df["unstable_settings"] > 0].copy()
+    unstable_df = unstable_df.sort_values(
+        ["unstable_settings", "pure_flip_settings", "invalid_outputs", "trial_idx"],
+        ascending=[False, False, False, True],
+    )
+
+    table_df = unstable_df.head(top_n).merge(
+        trials_df[["trial_idx", "title", "journal", "Annotation_accept"]],
+        on="trial_idx",
+        how="left",
+    )
+
+    table_df = table_df.rename(columns={
+        "trial_idx": "Trial ID",
+        "Annotation_accept": "Ground truth",
+        "title": "Title",
+        "journal": "Journal",
+        "vendors_with_instability": "Vendors with instability",
+        "unstable_settings": "Unstable settings",
+        "invalid_settings": "Invalid settings",
+        "invalid_outputs": "Invalid outputs",
+        "pure_flip_settings": "Pure flip settings",
+    })
+
+    output_path = output_dir / "table_unstable_trials.csv"
+    table_df.to_csv(output_path, index=False)
+    print(f"Saved unstable-trials table to {output_path}")
+
+
 def generate_vendor_tables(metrics_df: pd.DataFrame, output_dir: Path):
     """
     Generate vendor-specific tables for paper with formatted metrics.
@@ -353,6 +420,7 @@ def main():
     script_dir = Path(__file__).parent
     predictions_path = Path(args.predictions) if args.predictions else script_dir / "results" / "predictions.csv"
     output_dir = Path(args.output_dir) if args.output_dir else script_dir / "results"
+    trials_path = script_dir / "data" / "trials.csv"
 
     # Ensure output directory exists
     output_dir.mkdir(exist_ok=True)
@@ -363,6 +431,10 @@ def main():
         return 1
 
     analyze_predictions(predictions_path, output_dir)
+    if trials_path.exists():
+        generate_unstable_trials_table(predictions_path, trials_path, output_dir)
+    else:
+        print(f"Warning: Trials file not found, skipping unstable-trials table: {trials_path}")
     return 0
 
 
